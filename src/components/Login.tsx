@@ -10,7 +10,9 @@ export default function Login() {
     setError(null)
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      // BASE_URL is "/" in dev and "/plank-battle/" in the Pages build, so the
+      // OAuth round-trip always lands back on the app wherever it's hosted.
+      options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
     })
     if (authError) {
       setError(authError.message)
