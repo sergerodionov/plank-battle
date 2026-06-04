@@ -38,19 +38,21 @@ function App() {
   const loadData = useCallback(async () => {
     if (!userId) return
     setLoadingData(true)
-    const [mine, everyone] = await Promise.all([
-      supabase
-        .from('plank_results')
-        .select('*')
-        .eq('user_id', userId)
-        .order('local_date', { ascending: false }),
-      supabase
-        .from('plank_results')
-        .select('*, profiles(display_name, avatar_url, email)')
-        .order('local_date', { ascending: false }),
+    // Fetch results and profiles separately and merge in JS. (We can't use a
+    // PostgREST embedded join here: plank_results and profiles both reference
+    // auth.users but not each other, so there's no relationship to embed.)
+    const [resultsRes, profilesRes] = await Promise.all([
+      supabase.from('plank_results').select('*').order('local_date', { ascending: false }),
+      supabase.from('profiles').select('id, display_name, avatar_url, email'),
     ])
-    if (mine.data) setMyResults(mine.data as PlankResult[])
-    if (everyone.data) setAllResults(everyone.data as ResultWithProfile[])
+    const results = (resultsRes.data ?? []) as PlankResult[]
+    const profilesById = new Map((profilesRes.data ?? []).map((p) => [p.id, p]))
+    const withProfiles: ResultWithProfile[] = results.map((r) => ({
+      ...r,
+      profiles: profilesById.get(r.user_id) ?? null,
+    }))
+    setAllResults(withProfiles)
+    setMyResults(results.filter((r) => r.user_id === userId))
     setLoadingData(false)
   }, [userId])
 
