@@ -1,5 +1,6 @@
 import type { LeaderboardMetric, LeaderboardRow, ResultWithProfile } from '../types'
 import { dayDiff, localDateKey } from './dates'
+import { firstName } from './names'
 
 // Length of the consecutive-day run ending at the athlete's most recent entry.
 // Counts as a "current" streak only if that latest entry is today or yesterday;
@@ -38,7 +39,7 @@ export function buildLeaderboard(
     const bestSeconds = userRows.reduce((max, r) => Math.max(max, r.duration_seconds), 0)
     const profile = userRows[0].profiles
     const name =
-      profile?.display_name?.trim() ||
+      firstName(profile?.display_name) ||
       profile?.email?.split('@')[0] ||
       'Anonymous'
     leaderboard.push({

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabaseClient'
 import { localDateKey } from './lib/dates'
+import { firstName } from './lib/names'
 import type { PlankResult, ResultWithProfile } from './types'
 import Login from './components/Login'
 import Timer from './components/Timer'
@@ -88,7 +89,7 @@ function App() {
   const today = localDateKey()
   const todayResult = myResults.find((r) => r.local_date === today) ?? null
   const displayName =
-    (session.user.user_metadata?.full_name as string | undefined) ||
+    firstName(session.user.user_metadata?.full_name as string | undefined) ||
     session.user.email ||
     'Athlete'
 
