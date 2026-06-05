@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { formatDuration, localDateKey } from '../lib/dates'
+import { useWakeLock } from '../lib/useWakeLock'
 import type { PlankResult } from '../types'
 
 interface Props {
@@ -18,6 +19,9 @@ export default function Timer({ userId, todayResult, onSaved }: Props) {
   const [error, setError] = useState<string | null>(null)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
+
+  // Keep the screen on while the plank is being held.
+  useWakeLock(phase === 'running')
 
   // Drive the on-screen clock while running, using wall-clock deltas so it
   // stays accurate even if the browser throttles timers in the background.
