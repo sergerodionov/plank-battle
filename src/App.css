@@ -225,7 +225,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 16px;
   font-family: var(--display);
   font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 22px;
