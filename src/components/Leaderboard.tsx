@@ -35,7 +35,7 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
     if (metric === 'total')
       return (
         <span className="rank-value">
-          <span className="value-sub">{r.days}d / </span>
+          <span className="value-sub">{r.days}d&nbsp;&nbsp;</span>
           {formatDuration(r.totalSeconds)}
         </span>
       )
