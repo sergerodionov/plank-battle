@@ -39,14 +39,8 @@
   flex-direction: column;
   gap: 16px;
   flex: 1;
-  padding-bottom: 24px;
-}
-
-.app-footer {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  padding: 16px 0 24px;
+  /* room for the fixed bottom tab bar */
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
 }
 
 /* ---------- Cards ---------- */
@@ -329,4 +323,156 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+/* small "/ 6d" suffix next to total time */
+.value-sub {
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ---------- "View all" link ---------- */
+.link-btn {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: var(--accent-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+/* ---------- Form: stat cards ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.1;
+}
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Form: heatmap ---------- */
+.heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.heatmap-grid-wrap {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.heatmap-days {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.heatmap-day-label {
+  height: 14px;
+  line-height: 14px;
+  font-size: 9px;
+  color: var(--text-muted);
+}
+.heatmap-cols {
+  display: flex;
+  gap: 3px;
+}
+.heatmap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.heat-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.heat-l0 {
+  background: #1b2433;
+}
+.heat-l1 {
+  background: #0e4429;
+}
+.heat-l2 {
+  background: #006d32;
+}
+.heat-l3 {
+  background: #26a641;
+}
+.heat-l4 {
+  background: #39d353;
+}
+.heat-future {
+  background: transparent;
+}
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Bottom tab bar ---------- */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: 6px 8px env(safe-area-inset-bottom);
+  z-index: 20;
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  color: var(--text-muted);
+  border-radius: 12px;
+}
+.tab.active {
+  color: var(--accent-2);
+}
+.tab-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  filter: grayscale(0.4);
+}
+.tab.active .tab-icon {
+  filter: none;
+}
+.tab-label {
+  font-size: 0.7rem;
+  font-weight: 600;
 }

@@ -8,6 +8,8 @@ import Login from './components/Login'
 import Timer from './components/Timer'
 import MyResults from './components/MyResults'
 import Leaderboard from './components/Leaderboard'
+import FormView from './components/FormView'
+import TabBar, { type View } from './components/TabBar'
 import './App.css'
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
   const [myResults, setMyResults] = useState<PlankResult[]>([])
   const [allResults, setAllResults] = useState<ResultWithProfile[]>([])
   const [loadingData, setLoadingData] = useState(false)
+  const [view, setView] = useState<View>('home')
 
   // Track the auth session and react to login/logout.
   useEffect(() => {
@@ -106,18 +109,30 @@ function App() {
       </header>
 
       <main className="app-main">
-        <Timer userId={userId} todayResult={todayResult} onSaved={loadData} />
-        {loadingData && myResults.length === 0 ? (
-          <div className="card">
-            <p className="muted">Loading your results…</p>
-          </div>
-        ) : (
-          <MyResults results={myResults} />
+        {view === 'home' && (
+          <>
+            <Timer userId={userId} todayResult={todayResult} onSaved={loadData} />
+            {loadingData && myResults.length === 0 ? (
+              <div className="card">
+                <p className="muted">Loading your results…</p>
+              </div>
+            ) : (
+              <MyResults
+                results={myResults}
+                limit={3}
+                onViewAll={() => setView('history')}
+              />
+            )}
+            <Leaderboard rows={allResults} currentUserId={userId} />
+          </>
         )}
-        <Leaderboard rows={allResults} currentUserId={userId} />
+
+        {view === 'form' && <FormView results={myResults} />}
+
+        {view === 'history' && <MyResults results={myResults} title="History" />}
       </main>
 
-      <footer className="app-footer">One plank a day. 🔥</footer>
+      <TabBar active={view} onChange={setView} />
     </div>
   )
 }

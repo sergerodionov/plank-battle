@@ -21,7 +21,14 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
   const board = useMemo(() => buildLeaderboard(rows, metric), [rows, metric])
 
   const renderValue = (r: (typeof board)[number]) => {
-    if (metric === 'total') return formatDuration(r.totalSeconds)
+    if (metric === 'total') {
+      return (
+        <>
+          {formatDuration(r.totalSeconds)}
+          <span className="value-sub"> / {r.days}d</span>
+        </>
+      )
+    }
     if (metric === 'average') return formatDuration(r.averageSeconds)
     return `${r.currentStreak} ${r.currentStreak === 1 ? 'day' : 'days'} 🔥`
   }

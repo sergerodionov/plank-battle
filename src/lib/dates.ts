@@ -23,6 +23,20 @@ export function formatDuration(totalSeconds: number): string {
   return `${minutes}:${pad(seconds)}`
 }
 
+// Add (or subtract) whole days to a YYYY-MM-DD key. Uses UTC to dodge DST.
+export function addDays(key: string, n: number): string {
+  const [y, m, d] = key.split('-').map(Number)
+  const date = new Date(Date.UTC(y, m - 1, d) + n * 86_400_000)
+  const pad = (x: number) => x.toString().padStart(2, '0')
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`
+}
+
+// Day of week with Monday = 0 … Sunday = 6 (for week-aligned grids).
+export function weekdayMon0(key: string): number {
+  const [y, m, d] = key.split('-').map(Number)
+  return (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7
+}
+
 // Friendly "Today" / "Yesterday" / "Mon, Jun 2" label for a YYYY-MM-DD key.
 export function formatDateLabel(key: string, today: string = localDateKey()): string {
   const diff = dayDiff(today, key)
