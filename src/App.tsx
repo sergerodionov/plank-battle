@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabaseClient'
 import { localDateKey } from './lib/dates'
+import { currentStreak } from './lib/leaderboard'
 import { firstName } from './lib/names'
 import type { PlankResult, ResultWithProfile } from './types'
 import Login from './components/Login'
@@ -80,6 +81,13 @@ function App() {
 
   const today = localDateKey()
   const todayResult = myResults.find((r) => r.local_date === today) ?? null
+  // "DAY N" = which day of the current streak today is. If today isn't logged
+  // yet but the streak is alive (planked yesterday), today would extend it → +1.
+  const streak = currentStreak(
+    myResults.map((r) => r.local_date),
+    today,
+  )
+  const streakDay = todayResult ? streak : streak + 1
   const displayName =
     firstName(session.user.user_metadata?.full_name as string | undefined) ||
     session.user.email ||
@@ -92,7 +100,7 @@ function App() {
 
       {view === 'home' && (
         <>
-          <Timer userId={userId} todayResult={todayResult} day={myResults.length} onSaved={loadData} />
+          <Timer userId={userId} todayResult={todayResult} day={streakDay} onSaved={loadData} />
           <div className="divider" />
           <Leaderboard rows={allResults} currentUserId={userId} />
           <div className="divider" />
