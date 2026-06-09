@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100svh;
+  /* clear the iPhone status bar / notch when installed to the home screen */
+  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -21,7 +23,7 @@
 }
 .brand {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 30px;
   line-height: 1;
   color: var(--ink);
@@ -74,7 +76,7 @@
 }
 .big-time {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: clamp(68px, 21vw, 96px);
   line-height: 0.95;
   letter-spacing: -0.02em;
@@ -176,7 +178,7 @@
 }
 .rank-pos {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 22px;
   color: var(--dim);
 }
@@ -189,6 +191,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0; /* allow the name to shrink so the form strip never overflows */
 }
 .you-tag {
   font-size: 11px;
@@ -197,7 +200,7 @@
 }
 .rank-value {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 22px;
   color: var(--ink);
   white-space: nowrap;
@@ -207,11 +210,12 @@
 /* ---------- Form 7-day strip ---------- */
 .form-strip {
   display: inline-flex;
-  gap: 5px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 .form-sq {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   border-radius: 3px;
   box-sizing: border-box;
 }
@@ -247,7 +251,7 @@
 }
 .result-val {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 22px;
   color: var(--ink);
 }
@@ -301,6 +305,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100svh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .login-top {
   display: flex;
@@ -328,7 +334,7 @@
 }
 .login-big {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: clamp(80px, 28vw, 128px);
   line-height: 0.85;
   color: var(--ink);
@@ -381,7 +387,7 @@
   justify-content: center;
   text-align: center;
   gap: 12px;
-  padding: 24px;
+  padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
 }
 .center-screen .login-big {
   font-size: clamp(56px, 20vw, 88px);

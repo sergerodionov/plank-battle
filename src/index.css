@@ -44,7 +44,7 @@ button {
 /* Blobby display face (Workbench) for the brand + all big numbers */
 .display {
   font-family: var(--display);
-  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 0.95;
