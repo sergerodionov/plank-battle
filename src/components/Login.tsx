@@ -10,27 +10,38 @@ export default function Login() {
     setError(null)
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      // BASE_URL is "/" in dev and "/plank-battle/" in the Pages build, so the
-      // OAuth round-trip always lands back on the app wherever it's hosted.
       options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
     })
     if (authError) {
       setError(authError.message)
       setLoading(false)
     }
-    // On success the browser redirects to Google, so no further work here.
   }
 
   return (
-    <div className="login-screen">
-      <div className="logo">🧘</div>
-      <h1 className="title">Plank Battle</h1>
-      <p className="subtitle">One plank a day. Settle who's strongest.</p>
-      <button className="btn btn-google btn-lg" onClick={signIn} disabled={loading}>
-        <span className="g-mark">G</span>
-        {loading ? 'Connecting…' : 'Continue with Google'}
-      </button>
-      {error && <p className="error">{error}</p>}
+    <div className="login">
+      <div className="login-top">
+        <span>PLANK CHALLENGE</span>
+        <span className="v">v1.0</span>
+      </div>
+      <div className="divider" />
+
+      <div className="login-mid">
+        <span className="login-kicker">DAILY</span>
+        <span className="login-big display">plank</span>
+        <p className="login-sub">
+          How long can you last?
+          <br />
+          Sign in to join the tournament
+        </p>
+        <button className="btn-google" onClick={signIn} disabled={loading}>
+          <span>{loading ? 'CONNECTING…' : 'CONTINUE WITH GOOGLE'}</span>
+          <span>→</span>
+        </button>
+        {error && <p className="error">{error}</p>}
+      </div>
+
+      <div className="login-foot">SECURE · GOOGLE OAUTH</div>
     </div>
   )
 }

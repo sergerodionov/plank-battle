@@ -2,44 +2,48 @@ import { formatDateLabel, formatDuration } from '../lib/dates'
 import type { PlankResult } from '../types'
 
 interface Props {
-  results: PlankResult[] // expected newest-first
-  title?: string
-  limit?: number // when set, show only the most recent N
-  headerAction?: { label: string; onClick: () => void } // link shown top-right of the header
+  results: PlankResult[] // newest-first
+  onCheckHistory: () => void
 }
 
-export default function MyResults({ results, title = 'My results', limit, headerAction }: Props) {
-  // "Best" is computed across the full history so the PR tag is always correct,
-  // even when only the most recent few rows are shown.
-  const best = results.reduce((max, r) => Math.max(max, r.duration_seconds), 0)
-  const shown = limit ? results.slice(0, limit) : results
+export default function MyResults({ results, onCheckHistory }: Props) {
+  const best = results.reduce((m, r) => Math.max(m, r.duration_seconds), 0)
+  const total = results.reduce((s, r) => s + r.duration_seconds, 0)
+  const last3 = results.slice(0, 3)
 
   return (
-    <div className="card list-card">
-      <div className="list-head">
-        <h2 className="section-title">{title}</h2>
-        {headerAction && (
-          <button className="link-btn" onClick={headerAction.onClick}>
-            {headerAction.label}
-          </button>
-        )}
+    <>
+      <div className="sec-head">
+        <span className="sec-title">MY RESULTS</span>
       </div>
-
+      <div className="divider" />
       {results.length === 0 ? (
-        <p className="muted">No planks yet. Your history will show up here, newest on top.</p>
+        <p className="muted">No planks yet. Hit START above to log your first.</p>
       ) : (
-        <ul className="result-list">
-          {shown.map((r) => (
-            <li key={r.id} className="result-row">
-              <span className="result-date">{formatDateLabel(r.local_date)}</span>
-              <span className="result-time">
-                {formatDuration(r.duration_seconds)}
-                {r.duration_seconds === best && <span className="pr-tag">PR</span>}
-              </span>
-            </li>
+        <>
+          {last3.map((r, i) => (
+            <div key={r.id}>
+              {i > 0 && <div className="divider" />}
+              <div className="result-row">
+                <span className="result-date">{formatDateLabel(r.local_date)}</span>
+                <span className="result-time">
+                  {r.duration_seconds === best && <span className="pr-tag">PR</span>}
+                  <span className="result-val">{formatDuration(r.duration_seconds)}</span>
+                </span>
+              </div>
+            </div>
           ))}
-        </ul>
+          <div className="divider" />
+          <div className="mr-summary">
+            <button className="btn-inline" onClick={onCheckHistory}>
+              CHECK HISTORY
+            </button>
+            <span className="summary-text">
+              {results.length} {results.length === 1 ? 'PLANK' : 'PLANKS'} · {formatDuration(total)}
+            </span>
+          </div>
+        </>
       )}
-    </div>
+    </>
   )
 }

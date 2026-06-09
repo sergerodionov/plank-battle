@@ -9,21 +9,18 @@ interface Props {
 }
 
 const METRICS: { key: LeaderboardMetric; label: string }[] = [
-  { key: 'total', label: 'Total' },
-  { key: 'average', label: 'Average' },
-  { key: 'streak', label: 'Streak' },
-  { key: 'form', label: 'Form' },
+  { key: 'total', label: 'TOTAL' },
+  { key: 'average', label: 'AVG' },
+  { key: 'streak', label: 'STREAK' },
+  { key: 'form', label: 'FORM' },
 ]
 
-const MEDALS = ['🥇', '🥈', '🥉']
-
-function FormDots({ last7, today }: { last7: FormDay[]; today: string }) {
+function FormStrip({ last7, today }: { last7: FormDay[]; today: string }) {
   return (
-    <span className="form-dots">
+    <span className="form-strip">
       {last7.map((d) => {
-        // done → green; today not-done yet → neutral (the day isn't over); past not-done → red.
         const state = d.done ? 'done' : d.date === today ? 'pending' : 'missed'
-        return <span key={d.date} className={`form-dot ${state}`} title={d.date} />
+        return <span key={d.date} className={`form-sq ${state}`} title={d.date} />
       })}
     </span>
   )
@@ -35,27 +32,22 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
   const today = localDateKey()
 
   const renderValue = (r: (typeof board)[number]) => {
-    if (metric === 'total') {
-      return (
-        <>
-          {formatDuration(r.totalSeconds)}
-          <span className="value-sub"> / {r.days}d</span>
-        </>
-      )
-    }
-    if (metric === 'average') return formatDuration(r.averageSeconds)
-    if (metric === 'form') return <FormDots last7={r.last7} today={today} />
-    return `${r.currentStreak} ${r.currentStreak === 1 ? 'day' : 'days'} 🔥`
+    if (metric === 'total') return <span className="rank-value">{formatDuration(r.totalSeconds)}</span>
+    if (metric === 'average') return <span className="rank-value">{formatDuration(r.averageSeconds)}</span>
+    if (metric === 'streak') return <span className="rank-value">{r.currentStreak}</span>
+    return <FormStrip last7={r.last7} today={today} />
   }
 
   return (
-    <div className="card list-card">
-      <h2 className="section-title">Tournament</h2>
-      <div className="segmented">
+    <>
+      <div className="sec-head">
+        <span className="sec-title">TOURNAMENT</span>
+      </div>
+      <div className="pills">
         {METRICS.map((m) => (
           <button
             key={m.key}
-            className={`segment ${metric === m.key ? 'active' : ''}`}
+            className={`pill ${metric === m.key ? 'active' : ''}`}
             onClick={() => setMetric(m.key)}
           >
             {m.label}
@@ -64,31 +56,19 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
       </div>
 
       {board.length === 0 ? (
-        <p className="muted">No results yet. Be the first to log a plank!</p>
+        <p className="muted">No results yet. Be the first to log a plank.</p>
       ) : (
-        <ol className="rank-list">
-          {board.map((r, i) => (
-            <li
-              key={r.userId}
-              className={`rank-row ${r.userId === currentUserId ? 'me' : ''}`}
-            >
-              <span className="rank-pos">{MEDALS[i] ?? i + 1}</span>
-              <span className="rank-name">
-                {r.avatarUrl && (
-                  <img className="avatar" src={r.avatarUrl} alt="" referrerPolicy="no-referrer" />
-                )}
-                {r.name}
-                {r.userId === currentUserId && <span className="you-tag">you</span>}
-              </span>
-              <span className="rank-value">{renderValue(r)}</span>
-            </li>
-          ))}
-        </ol>
+        board.map((r, i) => (
+          <div key={r.userId} className={`rank-row ${r.userId === currentUserId ? 'me' : ''}`}>
+            <span className="rank-pos">{(i + 1).toString().padStart(2, '0')}</span>
+            <span className="rank-name">
+              {r.name}
+              {r.userId === currentUserId && <span className="you-tag">YOU</span>}
+            </span>
+            {renderValue(r)}
+          </div>
+        ))
       )}
-      <p className="muted fine">
-        {METRICS.find((m) => m.key === metric)?.label} · {board.length}{' '}
-        {board.length === 1 ? 'athlete' : 'athletes'}
-      </p>
-    </div>
+    </>
   )
 }

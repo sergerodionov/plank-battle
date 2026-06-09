@@ -1,22 +1,19 @@
 :root {
-  --bg: #0f172a;
-  --bg-soft: #1e293b;
-  --card: #1e293b;
-  --border: #334155;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --accent: #f97316;
-  --accent-2: #fb923c;
-  --primary: #22c55e;
-  --primary-d: #16a34a;
-  --stop: #ef4444;
-  --danger: #f87171;
-  --gold: #fbbf24;
+  --bg: #0e0e0e;
+  --surface: #262626;
+  --line: #2a2a2a;
+  --ink: #f2f2f2;
+  --dim: #8a8a8a;
+  --white: #ffffff;
+  --black: #000000;
 
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --display: 'Workbench', 'Space Mono', monospace;
+
   color-scheme: dark;
-  color: var(--text);
+  color: var(--ink);
   background: var(--bg);
+  font-family: var(--mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,21 +31,30 @@ body {
 }
 
 #root {
-  max-width: 520px;
+  max-width: 440px;
   margin: 0 auto;
   min-height: 100svh;
 }
 
 button {
-  font-family: inherit;
+  font-family: var(--mono);
   cursor: pointer;
 }
 
+/* Blobby display face (Workbench) for the brand + all big numbers */
+.display {
+  font-family: var(--display);
+  font-variation-settings: 'BLED' 100, 'SCAN' 48;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
 code {
-  background: var(--bg-soft);
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  font-family: var(--mono);
+  background: var(--surface);
+  border-radius: 4px;
   padding: 1px 5px;
   font-size: 0.85em;
-  color: var(--accent-2);
+  color: var(--ink);
 }
