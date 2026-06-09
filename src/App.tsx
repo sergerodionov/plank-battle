@@ -112,6 +112,7 @@ function App() {
         {view === 'home' && (
           <>
             <Timer userId={userId} todayResult={todayResult} onSaved={loadData} />
+            <Leaderboard rows={allResults} currentUserId={userId} />
             {loadingData && myResults.length === 0 ? (
               <div className="card">
                 <p className="muted">Loading your results…</p>
@@ -127,7 +128,6 @@ function App() {
                 }
               />
             )}
-            <Leaderboard rows={allResults} currentUserId={userId} />
           </>
         )}
 
