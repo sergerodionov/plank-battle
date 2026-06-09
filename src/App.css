@@ -191,7 +191,9 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 14px;
-  padding: 14px 20px;
+  /* fixed height so every tab (Total/Avg/Streak/Form) has identical rows */
+  min-height: 56px;
+  padding: 0 20px;
 }
 .rank-row.me {
   /* surface (#262626) at 50% so the highlight is subtler over the dark bg */
@@ -220,12 +222,15 @@
   color: var(--dim);
 }
 .rank-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
   font-family: var(--display);
   font-variation-settings: 'wght' 400, 'SCAN' 20;
   font-size: 22px;
   color: var(--ink);
   white-space: nowrap;
-  text-align: right;
 }
 /* small "/ 6d" day count next to total time — mono, not the blobby display */
 .value-sub {
