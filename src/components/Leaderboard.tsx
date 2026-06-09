@@ -35,8 +35,8 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
     if (metric === 'total')
       return (
         <span className="rank-value">
+          <span className="value-sub">{r.days}d / </span>
           {formatDuration(r.totalSeconds)}
-          <span className="value-sub"> / {r.days}d</span>
         </span>
       )
     if (metric === 'average') return <span className="rank-value">{formatDuration(r.averageSeconds)}</span>
