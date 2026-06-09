@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { buildLeaderboard } from '../lib/leaderboard'
 import { formatDuration, localDateKey } from '../lib/dates'
 import type { FormDay, LeaderboardMetric, ResultWithProfile } from '../types'
@@ -64,16 +64,22 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
       {board.length === 0 ? (
         <p className="muted">No results yet. Be the first to log a plank.</p>
       ) : (
-        board.map((r, i) => (
-          <div key={r.userId} className={`rank-row ${r.userId === currentUserId ? 'me' : ''}`}>
-            <span className="rank-pos">{(i + 1).toString().padStart(2, '0')}</span>
-            <span className="rank-name">
-              {r.name}
-              {r.userId === currentUserId && <span className="you-tag">YOU</span>}
-            </span>
-            {renderValue(r)}
-          </div>
-        ))
+        <>
+          <div className="divider" />
+          {board.map((r, i) => (
+            <Fragment key={r.userId}>
+              {i > 0 && <div className="divider" />}
+              <div className={`rank-row ${r.userId === currentUserId ? 'me' : ''}`}>
+                <span className="rank-pos">{(i + 1).toString().padStart(2, '0')}</span>
+                <span className="rank-name">
+                  {r.name}
+                  {r.userId === currentUserId && <span className="you-tag">YOU</span>}
+                </span>
+                {renderValue(r)}
+              </div>
+            </Fragment>
+          ))}
+        </>
       )}
     </>
   )

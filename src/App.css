@@ -67,7 +67,17 @@
   padding: 22px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+}
+/* 40px between the label row and the big number, and before the buttons (per mockup) */
+.hero > .big-time,
+.hero > .btn,
+.hero > .row {
+  margin-top: 40px;
+}
+.hero-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 12px;
 }
 .hero-row {
   display: flex;
@@ -144,10 +154,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
+  padding: 32px 20px 14px;
 }
 .sec-title {
-  font-weight: 700;
+  font-weight: 400;
   font-size: 15px;
   letter-spacing: 0.5px;
   color: var(--ink);

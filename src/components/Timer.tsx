@@ -18,6 +18,9 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
   const [elapsedMs, setElapsedMs] = useState(0)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Locks the timer the moment a plank is saved, without waiting for the
+  // server round-trip — so the UI can never sit on REDO/SAVE after a save.
+  const [savedDuration, setSavedDuration] = useState<number | null>(null)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
 
@@ -34,7 +37,9 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
   }, [phase])
 
   const elapsedSeconds = Math.floor(elapsedMs / 1000)
-  const done = !!todayResult
+  // "Done for today" — whether from a loaded result or a save we just made.
+  const lockedDuration = todayResult?.duration_seconds ?? savedDuration
+  const done = lockedDuration != null
 
   const start = () => {
     setError(null)
@@ -63,21 +68,14 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
       duration_seconds: elapsedSeconds,
     })
     setSaving(false)
-    if (insertError) {
-      if (insertError.code === '23505') {
-        setError('You already logged a plank today.')
-        onSaved()
-      } else {
-        setError(insertError.message)
-      }
+    // 23505 = already logged today: not an error to surface — just lock the UI.
+    if (insertError && insertError.code !== '23505') {
+      setError(insertError.message)
       return
     }
+    setSavedDuration(elapsedSeconds)
     onSaved()
   }
-
-  const shown = done
-    ? formatDuration(todayResult!.duration_seconds)
-    : formatDuration(elapsedSeconds)
 
   return (
     <div className="hero">
@@ -85,11 +83,11 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
         <span className="hero-label">TODAY'S PLANK</span>
         <span className="hero-day">DAY {day}</span>
       </div>
-      <div className={`big-time ${phase === 'running' ? 'live' : ''} ${done ? 'done' : ''}`}>
-        {done && phase === 'idle' ? formatDuration(todayResult!.duration_seconds) : shown}
+      <div className={`big-time ${!done && phase === 'running' ? 'live' : ''} ${done ? 'done' : ''}`}>
+        {done ? formatDuration(lockedDuration!) : formatDuration(elapsedSeconds)}
       </div>
 
-      {done && phase === 'idle' ? (
+      {done ? (
         <button className="btn btn-outline" disabled>
           DONE · COME BACK TOMORROW
         </button>
@@ -112,7 +110,7 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
         </div>
       )}
 
-      {error && <p className="error" style={{ padding: '4px 0 0' }}>{error}</p>}
+      {!done && error && <p className="hero-error">{error}</p>}
     </div>
   )
 }
