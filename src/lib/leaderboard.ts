@@ -1,6 +1,17 @@
-import type { LeaderboardMetric, LeaderboardRow, ResultWithProfile } from '../types'
-import { dayDiff, localDateKey } from './dates'
+import type { FormDay, LeaderboardMetric, LeaderboardRow, ResultWithProfile } from '../types'
+import { addDays, dayDiff, localDateKey } from './dates'
 import { firstName } from './names'
+
+// The last 7 calendar days (oldest → today), flagged done if the athlete
+// planked that day. `formScore` is how many of the 7 they hit.
+function buildLast7(dateSet: Set<string>, today: string): FormDay[] {
+  const days: FormDay[] = []
+  for (let i = 6; i >= 0; i--) {
+    const date = addDays(today, -i)
+    days.push({ date, done: dateSet.has(date) })
+  }
+  return days
+}
 
 // Length of the consecutive-day run ending at the athlete's most recent entry.
 // Counts as a "current" streak only if that latest entry is today or yesterday;
@@ -42,6 +53,7 @@ export function buildLeaderboard(
       firstName(profile?.display_name) ||
       profile?.email?.split('@')[0] ||
       'Anonymous'
+    const last7 = buildLast7(new Set(userRows.map((r) => r.local_date)), today)
     leaderboard.push({
       userId,
       name,
@@ -51,6 +63,8 @@ export function buildLeaderboard(
       averageSeconds: days > 0 ? totalSeconds / days : 0,
       bestSeconds,
       currentStreak: currentStreak(userRows.map((r) => r.local_date), today),
+      last7,
+      formScore: last7.filter((d) => d.done).length,
     })
   }
 
@@ -58,6 +72,7 @@ export function buildLeaderboard(
     total: (r) => r.totalSeconds,
     average: (r) => r.averageSeconds,
     streak: (r) => r.currentStreak,
+    form: (r) => r.formScore,
   }
   const key = sortKey[metric]
   // Sort by the chosen metric; break ties with total time so the ranking is stable.

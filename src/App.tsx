@@ -8,9 +8,9 @@ import Login from './components/Login'
 import Timer from './components/Timer'
 import MyResults from './components/MyResults'
 import Leaderboard from './components/Leaderboard'
-import FormView from './components/FormView'
-import TabBar, { type View } from './components/TabBar'
 import './App.css'
+
+type View = 'home' | 'history'
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -120,19 +120,25 @@ function App() {
               <MyResults
                 results={myResults}
                 limit={3}
-                onViewAll={() => setView('history')}
+                headerAction={
+                  myResults.length > 0
+                    ? { label: 'History →', onClick: () => setView('history') }
+                    : undefined
+                }
               />
             )}
             <Leaderboard rows={allResults} currentUserId={userId} />
           </>
         )}
 
-        {view === 'form' && <FormView results={myResults} />}
-
-        {view === 'history' && <MyResults results={myResults} title="History" />}
+        {view === 'history' && (
+          <MyResults
+            results={myResults}
+            title="History"
+            headerAction={{ label: '← Dashboard', onClick: () => setView('home') }}
+          />
+        )}
       </main>
-
-      <TabBar active={view} onChange={setView} />
     </div>
   )
 }

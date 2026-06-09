@@ -18,6 +18,12 @@ export interface ResultWithProfile extends PlankResult {
   profiles: Pick<Profile, 'display_name' | 'avatar_url' | 'email'> | null
 }
 
+// One of the last 7 calendar days for an athlete's "form" strip.
+export interface FormDay {
+  date: string // YYYY-MM-DD
+  done: boolean // did they plank that day?
+}
+
 export interface LeaderboardRow {
   userId: string
   name: string
@@ -27,6 +33,8 @@ export interface LeaderboardRow {
   averageSeconds: number
   bestSeconds: number
   currentStreak: number
+  last7: FormDay[] // oldest → today
+  formScore: number // count of planked days in the last 7
 }
 
-export type LeaderboardMetric = 'total' | 'average' | 'streak'
+export type LeaderboardMetric = 'total' | 'average' | 'streak' | 'form'

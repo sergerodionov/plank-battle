@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { buildLeaderboard } from '../lib/leaderboard'
-import { formatDuration } from '../lib/dates'
-import type { LeaderboardMetric, ResultWithProfile } from '../types'
+import { formatDuration, localDateKey } from '../lib/dates'
+import type { FormDay, LeaderboardMetric, ResultWithProfile } from '../types'
 
 interface Props {
   rows: ResultWithProfile[]
@@ -9,16 +9,30 @@ interface Props {
 }
 
 const METRICS: { key: LeaderboardMetric; label: string }[] = [
-  { key: 'total', label: 'Total time' },
+  { key: 'total', label: 'Total' },
   { key: 'average', label: 'Average' },
   { key: 'streak', label: 'Streak' },
+  { key: 'form', label: 'Form' },
 ]
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
+function FormDots({ last7, today }: { last7: FormDay[]; today: string }) {
+  return (
+    <span className="form-dots">
+      {last7.map((d) => {
+        // done → green; today not-done yet → neutral (the day isn't over); past not-done → red.
+        const state = d.done ? 'done' : d.date === today ? 'pending' : 'missed'
+        return <span key={d.date} className={`form-dot ${state}`} title={d.date} />
+      })}
+    </span>
+  )
+}
+
 export default function Leaderboard({ rows, currentUserId }: Props) {
   const [metric, setMetric] = useState<LeaderboardMetric>('total')
   const board = useMemo(() => buildLeaderboard(rows, metric), [rows, metric])
+  const today = localDateKey()
 
   const renderValue = (r: (typeof board)[number]) => {
     if (metric === 'total') {
@@ -30,6 +44,7 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
       )
     }
     if (metric === 'average') return formatDuration(r.averageSeconds)
+    if (metric === 'form') return <FormDots last7={r.last7} today={today} />
     return `${r.currentStreak} ${r.currentStreak === 1 ? 'day' : 'days'} 🔥`
   }
 
