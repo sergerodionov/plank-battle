@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
+import logo from '../assets/logo.svg'
 
 export default function Login() {
   const [loading, setLoading] = useState(false)
@@ -28,7 +29,7 @@ export default function Login() {
 
       <div className="login-mid">
         <span className="login-kicker">DAILY</span>
-        <span className="login-big display">plank</span>
+        <img src={logo} className="login-logo" alt="plank" />
         <p className="login-sub">
           How long can you last?
           <br />

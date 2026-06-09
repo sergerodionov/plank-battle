@@ -6,6 +6,7 @@ import { firstName } from './lib/names'
 import type { PlankResult, ResultWithProfile } from './types'
 import Login from './components/Login'
 import Header from './components/Header'
+import logo from './assets/logo.svg'
 import Timer from './components/Timer'
 import MyResults from './components/MyResults'
 import Leaderboard from './components/Leaderboard'
@@ -58,7 +59,7 @@ function App() {
   if (!isSupabaseConfigured) {
     return (
       <div className="center-screen">
-        <span className="login-big display">plank</span>
+        <img src={logo} className="login-logo" alt="plank" />
         <p className="login-sub">
           Supabase isn't configured. Copy <code>.env.example</code> to <code>.env.local</code>,
           add your keys, then restart <code>npm run dev</code>.
@@ -70,7 +71,7 @@ function App() {
   if (!authReady) {
     return (
       <div className="center-screen">
-        <span className="login-big display">plank</span>
+        <img src={logo} className="login-logo" alt="plank" />
       </div>
     )
   }
