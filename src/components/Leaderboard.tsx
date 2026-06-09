@@ -32,7 +32,13 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
   const today = localDateKey()
 
   const renderValue = (r: (typeof board)[number]) => {
-    if (metric === 'total') return <span className="rank-value">{formatDuration(r.totalSeconds)}</span>
+    if (metric === 'total')
+      return (
+        <span className="rank-value">
+          {formatDuration(r.totalSeconds)}
+          <span className="value-sub"> / {r.days}d</span>
+        </span>
+      )
     if (metric === 'average') return <span className="rank-value">{formatDuration(r.averageSeconds)}</span>
     if (metric === 'streak') return <span className="rank-value">{r.currentStreak}</span>
     return <FormStrip last7={r.last7} today={today} />

@@ -206,6 +206,14 @@
   white-space: nowrap;
   text-align: right;
 }
+/* small "/ 6d" day count next to total time — mono, not the blobby display */
+.value-sub {
+  font-family: var(--mono);
+  font-variation-settings: normal;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+}
 
 /* ---------- Form 7-day strip ---------- */
 .form-strip {
