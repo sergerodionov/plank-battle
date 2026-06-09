@@ -184,7 +184,8 @@
   padding: 14px 20px;
 }
 .rank-row.me {
-  background: var(--surface);
+  /* surface (#262626) at 50% so the highlight is subtler over the dark bg */
+  background: rgba(38, 38, 38, 0.5);
 }
 .rank-pos {
   font-family: var(--display);
