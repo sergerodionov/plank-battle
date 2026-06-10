@@ -71,10 +71,24 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
               {i > 0 && <div className="divider" />}
               <div className={`rank-row ${r.userId === currentUserId ? 'me' : ''}`}>
                 <span className="rank-pos">{(i + 1).toString().padStart(2, '0')}</span>
-                <span className="rank-name">
-                  {r.name}
-                  {r.userId === currentUserId && <span className="you-tag">YOU</span>}
-                </span>
+                <div className="rank-id">
+                  {r.avatarUrl ? (
+                    <img
+                      className="rank-avatar"
+                      src={r.avatarUrl}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="rank-avatar rank-avatar--fallback">
+                      {r.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span className="rank-name">
+                    {r.name}
+                    {r.userId === currentUserId && <span className="you-tag">YOU</span>}
+                  </span>
+                </div>
                 {renderValue(r)}
               </div>
             </Fragment>
