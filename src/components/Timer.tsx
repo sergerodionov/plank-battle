@@ -8,12 +8,13 @@ interface Props {
   userId: string
   todayResult: PlankResult | null
   day: number
+  totalDays: number
   onSaved: () => void
 }
 
 type Phase = 'idle' | 'running' | 'stopped'
 
-export default function Timer({ userId, todayResult, day, onSaved }: Props) {
+export default function Timer({ userId, todayResult, day, totalDays, onSaved }: Props) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [elapsedMs, setElapsedMs] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -81,7 +82,7 @@ export default function Timer({ userId, todayResult, day, onSaved }: Props) {
     <div className="hero">
       <div className="hero-row">
         <span className="hero-label">TODAY'S PLANK</span>
-        <span className="hero-day">DAY {day}</span>
+        <span className="hero-day">DAY {day}/{totalDays}</span>
       </div>
       <div className={`big-time ${!done && phase === 'running' ? 'live' : ''} ${done ? 'done' : ''}`}>
         {done ? formatDuration(lockedDuration!) : formatDuration(elapsedSeconds)}

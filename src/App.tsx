@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabaseClient'
-import { localDateKey } from './lib/dates'
-import { currentStreak } from './lib/leaderboard'
+import { localDateKey, dayDiff } from './lib/dates'
 import { firstName } from './lib/names'
+
+// The challenge runs for one year starting on this date. "DAY n/365" is a
+// global counter (same for everyone on a given calendar day), not a streak.
+const CHALLENGE_START = '2026-06-10'
+const CHALLENGE_LENGTH = 365
 import type { PlankResult, ResultWithProfile } from './types'
 import Login from './components/Login'
 import Header from './components/Header'
@@ -81,13 +85,8 @@ function App() {
 
   const today = localDateKey()
   const todayResult = myResults.find((r) => r.local_date === today) ?? null
-  // "DAY N" = which day of the current streak today is. If today isn't logged
-  // yet but the streak is alive (planked yesterday), today would extend it → +1.
-  const streak = currentStreak(
-    myResults.map((r) => r.local_date),
-    today,
-  )
-  const streakDay = todayResult ? streak : streak + 1
+  // Day number within the year-long challenge (1-based), clamped to 1..365.
+  const challengeDay = Math.min(CHALLENGE_LENGTH, Math.max(1, dayDiff(today, CHALLENGE_START) + 1))
   const displayName =
     firstName(session.user.user_metadata?.full_name as string | undefined) ||
     session.user.email ||
@@ -100,7 +99,13 @@ function App() {
 
       {view === 'home' && (
         <>
-          <Timer userId={userId} todayResult={todayResult} day={streakDay} onSaved={loadData} />
+          <Timer
+            userId={userId}
+            todayResult={todayResult}
+            day={challengeDay}
+            totalDays={CHALLENGE_LENGTH}
+            onSaved={loadData}
+          />
           <div className="divider" />
           <Leaderboard rows={allResults} currentUserId={userId} />
           <div className="divider" />
