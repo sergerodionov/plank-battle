@@ -81,8 +81,8 @@ export function buildLeaderboard(
     average: (r) => r.averageSeconds,
     streak: (r) => r.currentStreak,
     form: (r) => r.formScore,
-    // Progress is a visual tab; rank it by total so the order stays familiar.
-    progress: (r) => r.totalSeconds,
+    // Graph is a visual tab; rank it by total so the order stays familiar.
+    graph: (r) => r.totalSeconds,
   }
   const key = sortKey[metric]
   // Sort by the chosen metric; break ties with total time so the ranking is stable.

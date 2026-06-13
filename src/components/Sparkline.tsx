@@ -16,12 +16,15 @@ interface Props {
 // so a later joiner's line simply starts further to the right.
 export default function Sparkline({ points, best, totalDays, width = 132, height = 34 }: Props) {
   const gradId = useId()
-  const PADT = 4
-  const PADB = 3
+  // Insets leave room so the line cap and the today dot never clip at the edges.
+  const PADT = 5
+  const PADB = 4
+  const PADL = 3
+  const PADR = 4
   const plotH = height - PADT - PADB
   const baseline = PADT + plotH
   const denom = Math.max(1, totalDays - 1)
-  const xAt = (i: number) => (i / denom) * width
+  const xAt = (i: number) => PADL + (i / denom) * (width - PADL - PADR)
   const yAt = (v: number) => (best > 0 ? PADT + plotH * (1 - v / best) : baseline)
 
   const pts: Point[] = points.map((p) => [xAt(p.dayIndex), yAt(p.value)])

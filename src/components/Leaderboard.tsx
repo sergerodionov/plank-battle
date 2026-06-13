@@ -16,7 +16,7 @@ const METRICS: { key: LeaderboardMetric; label: string }[] = [
   { key: 'average', label: 'AVG' },
   { key: 'streak', label: 'STREAK' },
   { key: 'form', label: 'FORM' },
-  { key: 'progress', label: 'PROGRESS' },
+  { key: 'graph', label: 'GRAPH' },
 ]
 
 function FormStrip({ last7, today }: { last7: FormDay[]; today: string }) {
@@ -46,7 +46,7 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
       )
     if (metric === 'average') return <span className="rank-value">{formatDuration(r.averageSeconds)}</span>
     if (metric === 'streak') return <span className="rank-value">{r.currentStreak}</span>
-    if (metric === 'progress')
+    if (metric === 'graph')
       return (
         <Sparkline
           points={dailySeries(r.byDate, r.firstDate, CHALLENGE_START, today)}

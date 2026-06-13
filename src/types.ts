@@ -39,4 +39,4 @@ export interface LeaderboardRow {
   byDate: Record<string, number> // date → that day's plank seconds
 }
 
-export type LeaderboardMetric = 'total' | 'average' | 'streak' | 'form' | 'progress'
+export type LeaderboardMetric = 'total' | 'average' | 'streak' | 'form' | 'graph'
