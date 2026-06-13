@@ -35,6 +35,8 @@ export interface LeaderboardRow {
   currentStreak: number
   last7: FormDay[] // oldest → today
   formScore: number // count of planked days in the last 7
+  firstDate: string | null // their earliest plank day (YYYY-MM-DD)
+  byDate: Record<string, number> // date → that day's plank seconds
 }
 
-export type LeaderboardMetric = 'total' | 'average' | 'streak' | 'form'
+export type LeaderboardMetric = 'total' | 'average' | 'streak' | 'form' | 'progress'

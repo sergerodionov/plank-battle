@@ -1,6 +1,9 @@
 import { Fragment, useMemo, useState } from 'react'
 import { buildLeaderboard } from '../lib/leaderboard'
 import { formatDuration, localDateKey } from '../lib/dates'
+import { challengeDay, dailySeries } from '../lib/chart'
+import { CHALLENGE_LENGTH, CHALLENGE_START } from '../lib/challenge'
+import Sparkline from './Sparkline'
 import type { FormDay, LeaderboardMetric, ResultWithProfile } from '../types'
 
 interface Props {
@@ -13,6 +16,7 @@ const METRICS: { key: LeaderboardMetric; label: string }[] = [
   { key: 'average', label: 'AVG' },
   { key: 'streak', label: 'STREAK' },
   { key: 'form', label: 'FORM' },
+  { key: 'progress', label: 'PROGRESS' },
 ]
 
 function FormStrip({ last7, today }: { last7: FormDay[]; today: string }) {
@@ -30,6 +34,7 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
   const [metric, setMetric] = useState<LeaderboardMetric>('total')
   const board = useMemo(() => buildLeaderboard(rows, metric), [rows, metric])
   const today = localDateKey()
+  const totalDays = challengeDay(CHALLENGE_START, today, CHALLENGE_LENGTH)
 
   const renderValue = (r: (typeof board)[number]) => {
     if (metric === 'total')
@@ -41,6 +46,14 @@ export default function Leaderboard({ rows, currentUserId }: Props) {
       )
     if (metric === 'average') return <span className="rank-value">{formatDuration(r.averageSeconds)}</span>
     if (metric === 'streak') return <span className="rank-value">{r.currentStreak}</span>
+    if (metric === 'progress')
+      return (
+        <Sparkline
+          points={dailySeries(r.byDate, r.firstDate, CHALLENGE_START, today)}
+          best={r.bestSeconds}
+          totalDays={totalDays}
+        />
+      )
     return <FormStrip last7={r.last7} today={today} />
   }
 

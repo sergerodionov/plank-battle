@@ -169,11 +169,18 @@
 }
 .pills {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   padding: 0 20px 16px;
+  /* 5 tabs: scroll horizontally on narrow screens instead of wrapping */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pills::-webkit-scrollbar {
+  display: none;
 }
 .pill {
+  flex: 0 0 auto;
   padding: 9px 14px;
   border-radius: 8px;
   background: var(--surface);
@@ -263,6 +270,95 @@
   font-size: 12px;
   letter-spacing: 0.5px;
   color: var(--dim);
+}
+
+/* ---------- Progress sparkline (in-row) ---------- */
+.spark {
+  display: block;
+}
+
+/* ---------- History daily-results chart ---------- */
+.daily {
+  padding: 22px 20px 24px;
+}
+.daily-cap {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+.daily-chart {
+  display: block;
+  overflow: visible;
+}
+.daily-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.daily-tick {
+  stroke: var(--dim);
+  stroke-width: 1;
+}
+.daily-axis {
+  fill: var(--dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.daily-you {
+  stroke: var(--white);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.daily-other {
+  stroke: var(--dim);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.daily-val {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.daily-val--you {
+  fill: var(--ink);
+}
+.daily-val--other {
+  fill: var(--dim);
+}
+circle.dot-you {
+  fill: var(--white);
+}
+circle.dot-other {
+  fill: var(--dim);
+}
+.daily-legend {
+  display: flex;
+  gap: 18px;
+  padding-top: 12px;
+}
+.daily-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+}
+i.dot-you,
+i.dot-other {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+i.dot-you {
+  background: var(--white);
+}
+i.dot-other {
+  background: var(--dim);
 }
 
 /* ---------- Form 7-day strip ---------- */

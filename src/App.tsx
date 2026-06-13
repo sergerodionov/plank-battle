@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabaseClient'
-import { localDateKey, dayDiff } from './lib/dates'
+import { localDateKey } from './lib/dates'
+import { challengeDay } from './lib/chart'
+import { CHALLENGE_LENGTH, CHALLENGE_START } from './lib/challenge'
 import { firstName } from './lib/names'
-
-// The challenge runs for one year starting on this date. "DAY n/365" is a
-// global counter (same for everyone on a given calendar day), not a streak.
-const CHALLENGE_START = '2026-06-10'
-const CHALLENGE_LENGTH = 365
 import type { PlankResult, ResultWithProfile } from './types'
 import Login from './components/Login'
 import Header from './components/Header'
@@ -86,7 +83,7 @@ function App() {
   const today = localDateKey()
   const todayResult = myResults.find((r) => r.local_date === today) ?? null
   // Day number within the year-long challenge (1-based), clamped to 1..365.
-  const challengeDay = Math.min(CHALLENGE_LENGTH, Math.max(1, dayDiff(today, CHALLENGE_START) + 1))
+  const day = challengeDay(CHALLENGE_START, today, CHALLENGE_LENGTH)
   const displayName =
     firstName(session.user.user_metadata?.full_name as string | undefined) ||
     session.user.email ||
@@ -102,7 +99,7 @@ function App() {
           <Timer
             userId={userId}
             todayResult={todayResult}
-            day={challengeDay}
+            day={day}
             totalDays={CHALLENGE_LENGTH}
             onSaved={loadData}
           />
@@ -117,7 +114,14 @@ function App() {
         </>
       )}
 
-      {view === 'history' && <History results={myResults} onBack={() => setView('home')} />}
+      {view === 'history' && (
+        <History
+          results={myResults}
+          allResults={allResults}
+          currentUserId={userId}
+          onBack={() => setView('home')}
+        />
+      )}
 
       <footer className="app-footer">PLANK CHALLENGE · ONE PLANK A DAY</footer>
     </div>

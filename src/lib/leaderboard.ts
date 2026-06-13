@@ -54,6 +54,12 @@ export function buildLeaderboard(
       profile?.email?.split('@')[0] ||
       'Anonymous'
     const last7 = buildLast7(new Set(userRows.map((r) => r.local_date)), today)
+    // One value per calendar day (keep the longest plank if a day has several).
+    const byDate: Record<string, number> = {}
+    for (const r of userRows) {
+      byDate[r.local_date] = Math.max(byDate[r.local_date] ?? 0, r.duration_seconds)
+    }
+    const dates = Object.keys(byDate).sort()
     leaderboard.push({
       userId,
       name,
@@ -65,6 +71,8 @@ export function buildLeaderboard(
       currentStreak: currentStreak(userRows.map((r) => r.local_date), today),
       last7,
       formScore: last7.filter((d) => d.done).length,
+      firstDate: dates[0] ?? null,
+      byDate,
     })
   }
 
@@ -73,6 +81,8 @@ export function buildLeaderboard(
     average: (r) => r.averageSeconds,
     streak: (r) => r.currentStreak,
     form: (r) => r.formScore,
+    // Progress is a visual tab; rank it by total so the order stays familiar.
+    progress: (r) => r.totalSeconds,
   }
   const key = sortKey[metric]
   // Sort by the chosen metric; break ties with total time so the ranking is stable.
