@@ -1,4 +1,4 @@
-import { formatDateLabel, formatDuration, localDateKey } from '../lib/dates'
+import { addDays, formatDateLabel, formatDuration, localDateKey } from '../lib/dates'
 import { buildLeaderboard } from '../lib/leaderboard'
 import { challengeDay, dailySeries } from '../lib/chart'
 import { CHALLENGE_LENGTH, CHALLENGE_START } from '../lib/challenge'
@@ -28,6 +28,14 @@ export default function History({ results, allResults, currentUserId, onBack }: 
     ? `${other.name} (${other.userId === top?.userId ? 'BEST TOTAL' : '2ND TOTAL'})`.toUpperCase()
     : ''
 
+  // Every day from your first plank through today, so missed days show as 0:00.
+  const byDate = new Map(results.map((r) => [r.local_date, r]))
+  const firstDate = results.reduce((min, r) => (r.local_date < min ? r.local_date : min), today)
+  const days: { date: string; result: PlankResult | null }[] = []
+  for (let d = today; d >= firstDate; d = addDays(d, -1)) {
+    days.push({ date: d, result: byDate.get(d) ?? null })
+  }
+
   return (
     <>
       <div className="back-wrap">
@@ -54,15 +62,21 @@ export default function History({ results, allResults, currentUserId, onBack }: 
       {results.length === 0 ? (
         <p className="muted">No planks yet.</p>
       ) : (
-        results.map((r, i) => (
-          <div key={r.id}>
+        days.map(({ date, result }, i) => (
+          <div key={date}>
             {i > 0 && <div className="divider" />}
             <div className="result-row">
-              <span className="result-date">{formatDateLabel(r.local_date)}</span>
-              <span className="result-time">
-                {r.duration_seconds === best && <span className="pr-tag">PR</span>}
-                <span className="result-val">{formatDuration(r.duration_seconds)}</span>
-              </span>
+              <span className="result-date">{formatDateLabel(date)}</span>
+              {result ? (
+                <span className="result-time">
+                  {result.duration_seconds === best && <span className="pr-tag">PR</span>}
+                  <span className="result-val">{formatDuration(result.duration_seconds)}</span>
+                </span>
+              ) : (
+                <span className="result-time">
+                  <span className="result-val result-val--missed">0:00</span>
+                </span>
+              )}
             </div>
           </div>
         ))

@@ -405,6 +405,11 @@ i.dot-other {
   font-size: 22px;
   color: var(--ink);
 }
+/* Days with no plank logged — shown faded so recorded days stand out. */
+.result-val--missed {
+  color: var(--dim);
+  opacity: 0.6;
+}
 .pr-tag {
   border: 1px solid var(--line);
   border-radius: 4px;
